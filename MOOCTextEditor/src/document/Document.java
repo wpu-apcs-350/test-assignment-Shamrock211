@@ -132,7 +132,7 @@ public abstract class Document {
 	{
 	    // TODO: You will play with this method in week 1, and 
 		// then implement it in week 2
-	    return text.length();
+	    return 300;
 	}
 	
 	
