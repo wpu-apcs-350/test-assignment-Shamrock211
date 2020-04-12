@@ -62,12 +62,12 @@ public abstract class Document {
 	 *       is not considered a syllable unless the word has no other syllables. 
 	 *       You should consider y a vowel.
 	 */
-	protected static int countSyllables(String word)
+	protected int countSyllables(String word)
 	{
 		// TODO: Implement this method so that you can call it from the 
 	    // getNumSyllables method in BasicDocument (module 2) and 
 	    // EfficientDocument (module 3).
-		System.out.print("Counting syllables in " + word + "...");
+		//System.out.print("Counting syllables in " + word + "...");
 				int numSyllables = 0;
 				boolean newSyllable = true;
 				String vowels = "aeiouy";
@@ -86,7 +86,7 @@ public abstract class Document {
 						newSyllable = true;
 					}
 				}
-				System.out.println( "found " + numSyllables);
+				//System.out.println( "found " + numSyllables);
 				return numSyllables;
 	}
 	
@@ -128,6 +128,7 @@ public abstract class Document {
 		else {
 			System.out.println("FAILED.\n");
 		}
+		System.out.println("Flesch score " + doc.getFleschScore());
 		return passed;
 	}
 	
@@ -152,7 +153,8 @@ public abstract class Document {
 	{
 	    // TODO: You will play with this method in week 1, and 
 		// then implement it in week 2
-	    return 300;
+		double fleschScore = 206.835 - 1.015*(double)getNumWords()/ (double)getNumSentences() - 84.6 * (double)getNumSyllables()/ (double)getNumWords() ;
+		return fleschScore;
 	}
 	
 	
