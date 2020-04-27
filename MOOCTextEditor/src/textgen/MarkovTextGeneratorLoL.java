@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /** 
  * An implementation of the MTG interface that uses a list of lists.
@@ -22,6 +24,9 @@ public class MarkovTextGeneratorLoL implements MarkovTextGenerator {
 	
 	public MarkovTextGeneratorLoL(Random generator)
 	{
+		intialize(generator);
+	}
+	private void intialize(Random generator) {
 		wordList = new LinkedList<ListNode>();
 		starter = "";
 		rnGenerator = generator;
@@ -33,15 +38,68 @@ public class MarkovTextGeneratorLoL implements MarkovTextGenerator {
 	public void train(String sourceText)
 	{
 		// TODO: Implement this method
+		List<String> words = getWords(sourceText);
+		if (!words.isEmpty()) {
+			starter = words.get(0);
+			String prevWord = starter;
+
+			for (int i = 1; i < words.size(); ++i) {
+				ListNode listNode = findWordListNode(prevWord);
+				String w = words.get(i);
+				listNode.addNextWord(w);
+				prevWord = w;
+			}
+
+			findWordListNode(prevWord).addNextWord(starter);
+		}
 	}
-	
+	private ListNode findWordListNode(String word) {
+		ListNode listNode = null;
+		for (ListNode l : wordList) {
+			if (l.getWord().equals(word)) {
+				listNode = l;
+				break;
+			}
+		}
+
+		if (listNode == null) {
+			listNode = new ListNode(word);
+			wordList.add(listNode);
+		}
+
+		return listNode;
+	}
 	/** 
 	 * Generate the number of words requested.
 	 */
+	private List<String> getWords(String sourceText){
+		List<String> words = new LinkedList<>();
+		Pattern tokSplitter = Pattern.compile("[a-zA-Z']+");
+		Matcher m = tokSplitter.matcher(sourceText);
+
+		while (m.find()) {
+			words.add(m.group());
+		}
+
+		return words;
+		
+	}
 	@Override
 	public String generateText(int numWords) {
 	    // TODO: Implement this method
-		return null;
+		StringBuilder output = new StringBuilder();
+		if (!starter.equals("")) {
+			String currWord = starter;
+			while (numWords-- > 0) {
+				output.append(currWord);
+				if (numWords != 0) {
+					output.append(" ");
+				}
+				currWord = findWordListNode(currWord).getRandomNextWord(rnGenerator);
+			}
+
+		}
+		return output.toString();
 	}
 	
 	
@@ -62,6 +120,8 @@ public class MarkovTextGeneratorLoL implements MarkovTextGenerator {
 	public void retrain(String sourceText)
 	{
 		// TODO: Implement this method.
+		intialize(rnGenerator);
+		train(sourceText);
 	}
 	
 	// TODO: Add any private helper methods you need here.
