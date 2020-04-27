@@ -1,7 +1,9 @@
 package spelling;
 
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -40,7 +42,23 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
 	public boolean addWord(String word)
 	{
 	    //TODO: Implement this method.
-	    return false;
+		String wordToAdd = word.toLowerCase();
+		TrieNode node = root;
+		for (char c : wordToAdd.toCharArray()) {
+			if (node.getValidNextCharacters().contains(c)) {
+				node =node.getChild(c);
+			}
+			else
+				node = node.insert(c);
+		}
+
+		// Word already exists.
+		if (!node.endsWord()) {
+		node.setEndsWord(true);
+		size++;
+	    return true;
+	}
+		return false;
 	}
 	
 	/** 
@@ -50,7 +68,7 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
 	public int size()
 	{
 	    //TODO: Implement this method
-	    return 0;
+	    return size;
 	}
 	
 	
@@ -60,7 +78,20 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
 	public boolean isWord(String s) 
 	{
 	    // TODO: Implement this method
+		String wordToFind = s.toLowerCase();
+		TrieNode node = root;
+		for (char c: wordToFind.toCharArray()) {
+			if (node.getValidNextCharacters().contains(c)) {
+				node = node.getChild(c);
+			} else {
+				return false;
+			}
+		}
+		if (node.endsWord()) {
+			return true;
+		}
 		return false;
+		
 	}
 
 	/** 
@@ -100,8 +131,40 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
     	 //       If it is a word, add it to the completions list
     	 //       Add all of its child nodes to the back of the queue
     	 // Return the list of completions
-    	 
-         return null;
+    	 String stem = prefix.toLowerCase();
+    	  List<String> completions = new LinkedList<String>();
+    	  TrieNode node = root;
+    	  for(char c: stem.toCharArray()) {
+    	  if (node.getValidNextCharacters().contains(c)) {
+    		  node = node.getChild(c);
+    	  }
+    	  else {
+  			return completions;
+    	  }
+    	  }
+    	  if (node.endsWord()) {
+    		  completions.add(node.getText());
+    	  }
+
+  		Queue<TrieNode> nodeQueue = new LinkedList<TrieNode>();
+  		List<Character> child = new LinkedList<Character>(node.getValidNextCharacters());
+for(int i = 0; i < child.size(); i++) {
+	char c = child.get(i);
+	nodeQueue.add(node.getChild(c));
+}
+	while (!nodeQueue.isEmpty() && completions.size() < numCompletions) {
+	 TrieNode firstNode = nodeQueue.poll();
+	 if (firstNode.endsWord()) {
+		 completions.add(firstNode.getText());
+	 }
+	 
+	 List<Character> childNodes = new LinkedList<Character>(firstNode.getValidNextCharacters());
+	 for (int i = 0; i < childNodes.size(); i++) {
+		 char c = childNodes.get(i);
+		 nodeQueue.add(firstNode.getChild(c));
+	 }
+}
+         return completions;
      }
 
  	// For debugging
