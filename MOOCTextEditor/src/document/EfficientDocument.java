@@ -52,20 +52,32 @@ public class EfficientDocument extends Document {
 		// OF THIS METHOD.
 		List<String> tokens = getTokens("[!?.]+|[a-zA-Z]+");
 		
-		numWords = 0;
-		numSentences = 0;
-		numSyllables = 0;
-		for (int i=0;i<tokens.size();i++) {
-			if (isWord(tokens.get(i))) {
-				numWords += 1;
-				numSyllables += countSyllables(tokens.get(i));
-				if(i == tokens.size() -1) {
-					numSentences += 1;
-				}
-			} else {
-				numSentences += 1;
+		int totalnumber =0;
+		
+		int tokens_size= tokens.size();
+		
+		for (String i: tokens) {
+			
+			if(  isWord(i) ) { numWords++;}
+			
+			else {numSentences++;}
+			
+			numSyllables+=countSyllables(i);
+			
+				
+					if(totalnumber==tokens_size-1) {
+						
+						if(!i.matches("[.?!]+")) {++numSentences;}
+						
+					}
+					
+					totalnumber++;
+				
+			
 			}
-		}
+			
+			
+			
 	}
 		// TODO: Finish this method.  Remember the countSyllables method from 
 		// Document.  That will come in handy here.  isWord defined above will also help.
@@ -88,8 +100,7 @@ public class EfficientDocument extends Document {
 	@Override
 	public int getNumSentences() {
 		//TODO: write this method.  Hint: It's simple
-		List<String> tokens = getTokens("[^!?.]+");
-		return tokens.size();
+		return numSentences;
 	}
 
 	
@@ -109,8 +120,12 @@ public class EfficientDocument extends Document {
 	 */
 	@Override
 	public int getNumWords() {
-		List<String> tokens = getTokens("[a-zA-Z]+");
-	    return tokens.size();
+//		List<String> tokens = getTokens("[a-zA-Z]+");
+//	    return tokens.size();
+		
+		return numWords;
+		
+		
 		//TODO: write this method.  Hint: It's simple
 	   
 	}
@@ -134,13 +149,22 @@ public class EfficientDocument extends Document {
 	@Override
 	public int getNumSyllables() {
         //TODO: write this method.  Hint: It's simple
-		List<String> tokens = getTokens("[a-zA-Z]+");
-		int totalSyllables = 0;
-		for (String word : tokens)
-		{
-			totalSyllables += countSyllables(word);
-		}
-		return totalSyllables;
+//		List<String> tokens = getTokens("[a-zA-Z]+");
+//		int totalSyllables = 0;
+//		
+//		
+//		
+//		for (String word : tokens)
+//			
+//		{
+//			
+//			
+//			
+//			totalSyllables += countSyllables(word);
+//			
+//		}
+		
+		return numSyllables;
 	
 	}
 	
