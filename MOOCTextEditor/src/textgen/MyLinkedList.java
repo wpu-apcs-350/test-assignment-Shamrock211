@@ -1,6 +1,7 @@
 package textgen;
 
 import java.util.AbstractList;
+import java.util.Objects;
 
 
 /** A class that implements a doubly linked list
@@ -17,6 +18,12 @@ public class MyLinkedList<E> extends AbstractList<E> {
 	/** Create a new empty LinkedList */
 	public MyLinkedList() {
 		// TODO: Implement this method
+		head = new LLNode<E>(null);
+		tail = new LLNode<E>(null);
+		head.next = tail;
+		tail.prev = head;
+		size = 0;
+		
 	}
 
 	/**
@@ -26,7 +33,16 @@ public class MyLinkedList<E> extends AbstractList<E> {
 	public boolean add(E element ) 
 	{
 		// TODO: Implement this method
+		Objects.requireNonNull(element);
+		if (size == Integer.MAX_VALUE) {
 		return false;
+		}
+		LLNode<E> newNode = new LLNode<E>(element, tail.prev, tail);
+		tail.prev.next = newNode;
+		tail.prev = newNode;
+		++size;
+
+		return true;
 	}
 
 	/** Get the element at position index 
@@ -34,7 +50,20 @@ public class MyLinkedList<E> extends AbstractList<E> {
 	public E get(int index) 
 	{
 		// TODO: Implement this method.
-		return null;
+		return getNthNode(index).data;
+	}
+
+	private LLNode<E> getNthNode(int index) {
+
+		if (index < 0 || index >= size) {
+			throw new IndexOutOfBoundsException();
+		}
+
+		LLNode<E> node = head.next;
+		while (--index >= 0) {
+			node = node.next;
+		}
+		return node ;
 	}
 
 	/**
@@ -45,6 +74,16 @@ public class MyLinkedList<E> extends AbstractList<E> {
 	public void add(int index, E element ) 
 	{
 		// TODO: Implement this method
+		Objects.requireNonNull(element);
+		if (index == size) {
+			this.add(element);
+			return;
+		}
+		LLNode<E> nthNode = getNthNode(index);
+		LLNode<E> theNew = new LLNode<E>(element, nthNode.prev, nthNode);
+		nthNode.prev.next = theNew;
+		nthNode.prev = theNew;
+		++size;
 	}
 
 
@@ -52,7 +91,8 @@ public class MyLinkedList<E> extends AbstractList<E> {
 	public int size() 
 	{
 		// TODO: Implement this method
-		return -1;
+		
+		return size;
 	}
 
 	/** Remove a node at the specified index and return its data element.
@@ -64,7 +104,11 @@ public class MyLinkedList<E> extends AbstractList<E> {
 	public E remove(int index) 
 	{
 		// TODO: Implement this method
-		return null;
+		LLNode<E> nthNode = getNthNode(index);
+		nthNode.next.prev = nthNode.prev;
+		nthNode.prev.next = nthNode.next;
+		--size;
+		return nthNode.data;
 	}
 
 	/**
@@ -77,8 +121,30 @@ public class MyLinkedList<E> extends AbstractList<E> {
 	public E set(int index, E element) 
 	{
 		// TODO: Implement this method
-		return null;
-	}   
+		Objects.requireNonNull(element);
+		LLNode<E> nthNode = getNthNode(index);
+		E previousValue = nthNode.data;
+		nthNode.data = element;
+		return previousValue;
+	}  
+	public String toString() {
+		StringBuilder stringRepresentation = new StringBuilder();
+		stringRepresentation.append("[");
+		
+		int index = 0;
+
+		for (E element : this) {
+			if (index++ != size - 1) {
+				stringRepresentation.append(element.toString() + ", ");
+			} else {
+				stringRepresentation.append(element.toString());
+			}
+		}
+
+		stringRepresentation.append("]");
+
+		return stringRepresentation.toString();
+	}
 }
 
 class LLNode<E> 
@@ -89,7 +155,11 @@ class LLNode<E>
 
 	// TODO: Add any other methods you think are useful here
 	// E.g. you might want to add another constructor
-
+	public LLNode(E e, LLNode<E> prev, LLNode<E> next) {
+		this.data = e;
+		this.prev = prev;
+		this.next = next;
+	}
 	public LLNode(E e) 
 	{
 		this.data = e;
