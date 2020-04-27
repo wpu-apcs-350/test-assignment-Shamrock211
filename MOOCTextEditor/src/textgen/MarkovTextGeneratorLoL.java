@@ -74,7 +74,7 @@ public class MarkovTextGeneratorLoL implements MarkovTextGenerator {
 	 */
 	public List<String> getWords(String sourceText){
 		List<String> words = new LinkedList<>();
-		Pattern tokSplitter = Pattern.compile("[a-zA-Z']+");
+		Pattern tokSplitter = Pattern.compile("[a-zA-Z',.!?]+");
 		Matcher m = tokSplitter.matcher(sourceText);
 
 		while (m.find()) {
