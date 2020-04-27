@@ -14,19 +14,19 @@ import java.util.regex.Pattern;
 public class MarkovTextGeneratorLoL implements MarkovTextGenerator {
 
 	// The list of words with their next words
-	private List<ListNode> wordList; 
+	public List<ListNode> wordList; 
 	
 	// The starting "word"
-	private String starter;
+	public String starter;
 	
 	// The random number generator
-	private Random rnGenerator;
+	public Random rnGenerator;
 	
 	public MarkovTextGeneratorLoL(Random generator)
 	{
 		intialize(generator);
 	}
-	private void intialize(Random generator) {
+	public void intialize(Random generator) {
 		wordList = new LinkedList<ListNode>();
 		starter = "";
 		rnGenerator = generator;
@@ -53,7 +53,7 @@ public class MarkovTextGeneratorLoL implements MarkovTextGenerator {
 			findWordListNode(prevWord).addNextWord(starter);
 		}
 	}
-	private ListNode findWordListNode(String word) {
+	public ListNode findWordListNode(String word) {
 		ListNode listNode = null;
 		for (ListNode l : wordList) {
 			if (l.getWord().equals(word)) {
@@ -72,7 +72,7 @@ public class MarkovTextGeneratorLoL implements MarkovTextGenerator {
 	/** 
 	 * Generate the number of words requested.
 	 */
-	private List<String> getWords(String sourceText){
+	public List<String> getWords(String sourceText){
 		List<String> words = new LinkedList<>();
 		Pattern tokSplitter = Pattern.compile("[a-zA-Z']+");
 		Matcher m = tokSplitter.matcher(sourceText);
@@ -204,7 +204,7 @@ class ListNode
 		// TODO: Implement this method
 	    // The random number generator should be passed from 
 	    // the MarkovTextGeneratorLoL class
-	    return null;
+	    return nextWords.get(generator.nextInt(nextWords.size()));
 	}
 
 	public String toString()
